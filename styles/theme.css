@@ -1,0 +1,181 @@
+/**
+ * Theme CSS - 主题变量定义
+ * 包含浅色/深色主题的CSS变量
+ */
+
+/* 浅色主题（默认） */
+:root {
+    /* 主色调 */
+    --color-primary: #4F46E5;
+    --color-primary-hover: #4338CA;
+    --color-primary-light: #818CF8;
+    --color-primary-bg: #EEF2FF;
+
+    /* 辅助色 */
+    --color-secondary: #10B981;
+    --color-secondary-hover: #059669;
+    --color-secondary-bg: #D1FAE5;
+
+    /* 警告色 */
+    --color-warning: #F59E0B;
+    --color-warning-hover: #D97706;
+    --color-warning-bg: #FEF3C7;
+
+    /* 错误色 */
+    --color-error: #EF4444;
+    --color-error-hover: #DC2626;
+    --color-error-bg: #FEE2E2;
+
+    /* 信息色 */
+    --color-info: #3B82F6;
+    --color-info-bg: #DBEAFE;
+
+    /* 背景色 */
+    --color-bg: #F9FAFB;
+    --color-surface: #FFFFFF;
+    --color-surface-elevated: #FFFFFF;
+
+    /* 文字颜色 */
+    --color-text: #111827;
+    --color-text-secondary: #6B7280;
+    --color-text-muted: #9CA3AF;
+    --color-text-inverse: #FFFFFF;
+
+    /* 边框颜色 */
+    --color-border: #E5E7EB;
+    --color-border-light: #F3F4F6;
+    --color-border-focus: #4F46E5;
+
+    /* 阴影 */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+    /* 圆角 */
+    --radius-sm: 4px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-full: 9999px;
+
+    /* 间距 */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-8: 32px;
+    --space-10: 40px;
+    --space-12: 48px;
+
+    /* 布局尺寸 */
+    --header-height: 64px;
+    --sidebar-width: 280px;
+    --course-sidebar-width: 320px;
+    --editor-min-height: 300px;
+
+    /* 字体 */
+    --font-sans: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-mono: 'Fira Code', 'JetBrains Mono', 'Consolas', monospace;
+
+    /* 字号 */
+    --text-xs: 12px;
+    --text-sm: 14px;
+    --text-base: 16px;
+    --text-lg: 18px;
+    --text-xl: 20px;
+    --text-2xl: 24px;
+    --text-3xl: 30px;
+    --text-4xl: 36px;
+
+    /* 行高 */
+    --leading-tight: 1.25;
+    --leading-normal: 1.5;
+    --leading-relaxed: 1.75;
+
+    /* 过渡 */
+    --transition-fast: 150ms ease;
+    --transition-normal: 250ms ease;
+    --transition-slow: 350ms ease;
+
+    /* Z-index层级 */
+    --z-dropdown: 100;
+    --z-sticky: 200;
+    --z-fixed: 300;
+    --z-modal-backdrop: 400;
+    --z-modal: 500;
+    --z-tooltip: 600;
+    --z-toast: 700;
+
+    /* CodeMirror主题覆盖 */
+    --cm-bg: #FFFFFF;
+    --cm-gutter-bg: #F9FAFB;
+    --cm-gutter-color: #9CA3AF;
+}
+
+/* 深色主题 */
+[data-theme="dark"] {
+    /* 主色调 */
+    --color-primary: #818CF8;
+    --color-primary-hover: #6366F1;
+    --color-primary-light: #A5B4FC;
+    --color-primary-bg: #1E1B4B;
+
+    /* 辅助色 */
+    --color-secondary: #34D399;
+    --color-secondary-hover: #10B981;
+    --color-secondary-bg: #064E3B;
+
+    /* 警告色 */
+    --color-warning: #FBBF24;
+    --color-warning-hover: #F59E0B;
+    --color-warning-bg: #451A03;
+
+    /* 错误色 */
+    --color-error: #F87171;
+    --color-error-hover: #EF4444;
+    --color-error-bg: #450A0A;
+
+    /* 信息色 */
+    --color-info: #60A5FA;
+    --color-info-bg: #1E3A8A;
+
+    /* 背景色 */
+    --color-bg: #111827;
+    --color-surface: #1F2937;
+    --color-surface-elevated: #374151;
+
+    /* 文字颜色 */
+    --color-text: #F9FAFB;
+    --color-text-secondary: #9CA3AF;
+    --color-text-muted: #6B7280;
+    --color-text-inverse: #111827;
+
+    /* 边框颜色 */
+    --color-border: #374151;
+    --color-border-light: #1F2937;
+    --color-border-focus: #818CF8;
+
+    /* 阴影 */
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+
+    /* CodeMirror主题覆盖 */
+    --cm-bg: #1E293B;
+    --cm-gutter-bg: #0F172A;
+    --cm-gutter-color: #64748B;
+}
+
+/* 主题过渡动画 */
+html {
+    transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+body {
+    background-color: var(--color-bg);
+    color: var(--color-text);
+}

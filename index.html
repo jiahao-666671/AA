@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python互动学习平台 - 浏览器端Python学习</title>
+    <meta name="description" content="基于Pyodide的互动式Python学习平台，无需安装环境，即开即用。包含入门、实操、进阶三层课程，配合电商数据集实战练习。">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐍</text></svg>">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/theme/material-darker.min.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+
+    <!-- Marked.js for Markdown -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@9.1.0/marked.min.js"></script>
+
+    <!-- Pyodide -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles/theme.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="header">
+        <div class="header-left">
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="切换侧边栏">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 12h18M3 6h18M3 18h18"/>
+                </svg>
+            </button>
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🐍</span>
+                <span class="logo-text">Python学习</span>
+            </a>
+        </div>
+        <nav class="header-nav">
+            <a href="index.html" class="nav-link active">首页</a>
+            <a href="course.html" class="nav-link">课程学习</a>
+        </nav>
+        <div class="header-right">
+            <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+                <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"/>
+                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                </svg>
+                <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- 主容器 -->
+    <div class="main-container">
+        <!-- 左侧辅助侧边栏 -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">📝 实时笔记</h3>
+                <textarea class="notes-input" id="globalNotes" placeholder="在此记录学习笔记..."></textarea>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">📊 电商指标速查</h3>
+                <div class="cheatsheet">
+                    <div class="cheatsheet-item">
+                        <span class="cheatsheet-label">GMV</span>
+                        <span class="cheatsheet-desc">商品交易总额</span>
+                    </div>
+                    <div class="cheatsheet-item">
+                        <span class="cheatsheet-label">客单价</span>
+                        <span class="cheatsheet-desc">平均每单金额</span>
+                    </div>
+                    <div class="cheatsheet-item">
+                        <span class="cheatsheet-label">转化率</span>
+                        <span class="cheatsheet-desc">下单用户/访客</span>
+                    </div>
+                    <div class="cheatsheet-item">
+                        <span class="cheatsheet-label">复购率</span>
+                        <span class="cheatsheet-desc">重复购买占比</span>
+                    </div>
+                    <div class="cheatsheet-item">
+                        <span class="cheatsheet-label">UV</span>
+                        <span class="cheatsheet-desc">独立访客数</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">🐼 Pandas常用代码</h3>
+                <div class="code-snippets">
+                    <button class="snippet-btn" data-code="import pandas as pd">
+                        <code>import pandas as pd</code>
+                    </button>
+                    <button class="snippet-btn" data-code="df.head()">
+                        <code>df.head()</code>
+                    </button>
+                    <button class="snippet-btn" data-code="df.info()">
+                        <code>df.info()</code>
+                    </button>
+                    <button class="snippet-btn" data-code="df.describe()">
+                        <code>df.describe()</code>
+                    </button>
+                    <button class="snippet-btn" data-code="df['column'].value_counts()">
+                        <code>value_counts()</code>
+                    </button>
+                    <button class="snippet-btn" data-code="df.groupby('col').sum()">
+                        <code>groupby().sum()</code>
+                    </button>
+                    <button class="snippet-btn" data-code="df.merge(df2, on='key')">
+                        <code>df.merge()</code>
+                    </button>
+                    <button class="snippet-btn" data-code="df.sort_values('col')">
+                        <code>sort_values()</code>
+                    </button>
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <h3 class="sidebar-title">💾 数据管理</h3>
+                <div class="data-actions">
+                    <button class="btn btn-secondary" id="exportBtn">导出进度</button>
+                    <button class="btn btn-secondary" id="importBtn">导入进度</button>
+                    <input type="file" id="importFile" accept=".json" hidden>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="content">
+            <!-- 首页英雄区 -->
+            <section class="hero">
+                <div class="hero-content">
+                    <h1 class="hero-title">浏览器中的Python学习</h1>
+                    <p class="hero-subtitle">无需安装任何软件，打开浏览器即可开始编程之旅。内置Pyodide引擎，支持pandas数据分析。</p>
+                    <div class="hero-actions">
+                        <a href="course.html" class="btn btn-primary btn-lg">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="5 3 19 12 5 21 5 3"/>
+                            </svg>
+                            开始学习
+                        </a>
+                        <button class="btn btn-outline btn-lg" id="demoBtn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/>
+                                <line x1="12" y1="15" x2="12" y2="3"/>
+                            </svg>
+                            快速体验
+                        </button>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="code-preview">
+                        <div class="code-preview-header">
+                            <span class="dot red"></span>
+                            <span class="dot yellow"></span>
+                            <span class="dot green"></span>
+                            <span class="code-preview-title">python</span>
+                        </div>
+                        <pre class="code-preview-content"><code><span class="keyword">import</span> pandas <span class="keyword">as</span> pd
+
+<span class="comment"># 创建一个简单的数据表</span>
+data = {
+    <span class="string">'商品'</span>: [<span class="string">'手机'</span>, <span class="string">'电脑'</span>, <span class="string">'平板'</span>],
+    <span class="string">'销量'</span>: [<span class="number">120</span>, <span class="number">85</span>, <span class="number">60</span>],
+    <span class="string">'单价'</span>: [<span class="number">2999</span>, <span class="number">5999</span>, <span class="number">1999</span>]
+}
+df = pd.DataFrame(data)
+df[<span class="string">'销售额'</span>] = df[<span class="string">'销量'</span>] * df[<span class="string">'单价'</span>]
+<span class="function">print</span>(df)</code></pre>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 学习统计看板 -->
+            <section class="stats-section">
+                <h2 class="section-title">学习进度</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon stat-icon-primary">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="completedLessons">0</span>
+                            <span class="stat-label">已完成课程</span>
+                        </div>
+                        <div class="stat-chart">
+                            <canvas id="lessonsChart" width="80" height="80"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon stat-icon-success">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                <polyline points="22 4 12 14.01 9 11.01"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="totalExercises">0</span>
+                            <span class="stat-label">完成习题</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon stat-icon-warning">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="avgScore">0%</span>
+                            <span class="stat-label">平均得分</span>
+                        </div>
+                        <div class="stat-chart">
+                            <canvas id="scoreChart" width="80" height="80"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon stat-icon-info">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"/>
+                                <polyline points="12 6 12 12 16 14"/>
+                            </svg>
+                        </div>
+                        <div class="stat-info">
+                            <span class="stat-value" id="totalTime">0分钟</span>
+                            <span class="stat-label">累计学习</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 课程概览 -->
+            <section class="courses-section">
+                <h2 class="section-title">课程目录</h2>
+                <div class="courses-grid">
+                    <div class="course-card" data-level="入门">
+                        <div class="course-badge course-badge-primary">入门</div>
+                        <h3 class="course-title">Python基础</h3>
+                        <p class="course-desc">变量、数据类型、条件语句、循环等核心语法，为后续学习打下坚实基础。</p>
+                        <div class="course-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <span class="progress-text">0/4 课程</span>
+                        </div>
+                        <a href="course.html?lesson=1-1" class="btn btn-primary">开始学习</a>
+                    </div>
+
+                    <div class="course-card" data-level="实操">
+                        <div class="course-badge course-badge-success">实操</div>
+                        <h3 class="course-title">数据处理实战</h3>
+                        <p class="course-desc">Pandas数据处理、文件读取、数据清洗转换，实战电商数据集。</p>
+                        <div class="course-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <span class="progress-text">0/4 课程</span>
+                        </div>
+                        <a href="course.html?lesson=2-1" class="btn btn-primary">开始学习</a>
+                    </div>
+
+                    <div class="course-card" data-level="进阶">
+                        <div class="course-badge course-badge-warning">进阶</div>
+                        <h3 class="course-title">电商分析进阶</h3>
+                        <p class="course-desc">数据聚合、多表关联、可视化，掌握电商数据分析完整流程。</p>
+                        <div class="course-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 0%"></div>
+                            </div>
+                            <span class="progress-text">0/4 课程</span>
+                        </div>
+                        <a href="course.html?lesson=3-1" class="btn btn-primary">开始学习</a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 错题本入口 -->
+            <section class="wrong-questions-section" id="wrongQuestionsSection" style="display: none;">
+                <h2 class="section-title">📕 错题本</h2>
+                <div class="wrong-questions-list" id="wrongQuestionsList"></div>
+            </section>
+        </main>
+    </div>
+
+    <!-- 快速体验模态框 -->
+    <div class="modal" id="demoModal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h3 class="modal-title">快速体验Python</h3>
+                <button class="modal-close" aria-label="关闭">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="demo-editor">
+                    <textarea id="demoCode"># 在这里输入Python代码
+# 然后点击运行按钮
+
+print("Hello, Python!")
+
+# 试试计算
+a = 10
+b = 20
+print(f"{a} + {b} = {a + b}")
+
+# 试试列表
+fruits = ["苹果", "香蕉", "橙子"]
+for fruit in fruits:
+    print(fruit)</textarea>
+                </div>
+                <div class="demo-output" id="demoOutput">
+                    <div class="output-placeholder">运行结果将显示在这里...</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="runDemoBtn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <polygon points="5 3 19 12 5 21 5 3"/>
+                    </svg>
+                    运行代码
+                </button>
+                <button class="btn btn-secondary" id="clearDemoBtn">清空</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast容器 -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Scripts -->
+    <script src="scripts/utils.js"></script>
+    <script src="scripts/storage.js"></script>
+    <script src="scripts/pyodide-runner.js"></script>
+    <script src="scripts/editor.js"></script>
+    <script src="scripts/course-data.js"></script>
+    <script src="scripts/app.js"></script>
+</body>
+</html>

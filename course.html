@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>课程学习 - Python互动学习平台</title>
+    <meta name="description" content="系统化学习Python，从基础语法到数据分析实战。">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐍</text></svg>">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.16/theme/material-darker.min.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
+
+    <!-- Marked.js for Markdown -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@9.1.0/marked.min.js"></script>
+
+    <!-- Pyodide -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles/theme.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <!-- 顶部导航栏 -->
+    <header class="header header-course">
+        <div class="header-left">
+            <button class="sidebar-toggle" id="sidebarToggle" aria-label="切换侧边栏">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 12h18M3 6h18M3 18h18"/>
+                </svg>
+            </button>
+            <a href="index.html" class="logo">
+                <span class="logo-icon">🐍</span>
+                <span class="logo-text">Python学习</span>
+            </a>
+            <div class="breadcrumb">
+                <span class="breadcrumb-sep">/</span>
+                <span class="breadcrumb-current" id="breadcrumbText">课程学习</span>
+            </div>
+        </div>
+        <nav class="header-nav">
+            <a href="index.html" class="nav-link">首页</a>
+            <a href="course.html" class="nav-link active">课程学习</a>
+        </nav>
+        <div class="header-right">
+            <button class="theme-toggle" id="themeToggle" aria-label="切换主题">
+                <svg class="icon-sun" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="5"/>
+                    <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                </svg>
+                <svg class="icon-moon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <!-- 主容器 -->
+    <div class="main-container main-container-course">
+        <!-- 左侧课程目录 -->
+        <aside class="course-sidebar" id="courseSidebar">
+            <div class="course-sidebar-header">
+                <h3 class="course-sidebar-title">课程目录</h3>
+                <button class="btn btn-sm btn-ghost collapse-sidebar" id="collapseSidebar">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="15 18 9 12 15 6"/>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="course-list" id="courseList">
+                <!-- 课程列表由JS动态生成 -->
+            </div>
+
+            <div class="course-sidebar-footer">
+                <div class="course-progress-summary">
+                    <span class="progress-label">总体进度</span>
+                    <span class="progress-value" id="totalProgress">0%</span>
+                </div>
+                <div class="progress-bar progress-bar-sm">
+                    <div class="progress-fill" id="totalProgressBar" style="width: 0%"></div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="content content-course">
+            <!-- 任务内容区 -->
+            <div class="task-container" id="taskContainer">
+                <!-- 任务标题 -->
+                <div class="task-header">
+                    <div class="task-meta">
+                        <span class="task-badge" id="taskBadge">入门</span>
+                        <span class="task-id" id="taskId">1-1</span>
+                    </div>
+                    <h1 class="task-title" id="taskTitle">Python基础语法</h1>
+                    <div class="task-nav">
+                        <button class="btn btn-sm btn-ghost" id="prevTaskBtn">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="15 18 9 12 15 6"/>
+                            </svg>
+                            上一节
+                        </button>
+                        <button class="btn btn-sm btn-ghost" id="nextTaskBtn">
+                            下一节
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="9 18 15 12 9 6"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 任务内容 -->
+                <div class="task-content">
+                    <!-- 文字讲解区 -->
+                    <div class="task-text" id="taskText">
+                        <!-- 任务内容由JS动态填充 -->
+                    </div>
+
+                    <!-- 内嵌编辑器区域 -->
+                    <div class="task-editor">
+                        <div class="editor-header">
+                            <span class="editor-title">📝 代码编辑器</span>
+                            <div class="editor-actions">
+                                <button class="btn btn-sm btn-secondary" id="formatCodeBtn" title="格式化代码">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <line x1="21" y1="10" x2="3" y2="10"/>
+                                        <line x1="21" y1="6" x2="3" y2="6"/>
+                                        <line x1="21" y1="14" x2="3" y2="14"/>
+                                        <line x1="21" y1="18" x2="3" y2="18"/>
+                                    </svg>
+                                    格式化
+                                </button>
+                                <button class="btn btn-sm btn-secondary" id="importDataBtn" title="导入电商数据集">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                        <polyline points="17 8 12 3 7 8"/>
+                                        <line x1="12" y1="3" x2="12" y2="15"/>
+                                    </svg>
+                                    导入数据
+                                </button>
+                                <button class="btn btn-sm btn-secondary" id="resetCodeBtn" title="重置为模板">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/>
+                                        <path d="M3 3v5h5"/>
+                                    </svg>
+                                    重置
+                                </button>
+                                <button class="btn btn-sm btn-secondary" id="clearCodeBtn" title="清空编辑器">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="3 6 5 6 21 6"/>
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                    </svg>
+                                    清空
+                                </button>
+                            </div>
+                        </div>
+                        <div class="editor-body">
+                            <textarea id="codeEditor"></textarea>
+                        </div>
+                        <div class="editor-footer">
+                            <button class="btn btn-primary" id="runCodeBtn">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                                    <polygon points="5 3 19 12 5 21 5 3"/>
+                                </svg>
+                                运行代码
+                            </button>
+                            <div class="editor-status">
+                                <span class="status-indicator" id="statusIndicator"></span>
+                                <span class="status-text" id="statusText">就绪</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 运行结果面板 -->
+                    <div class="task-output">
+                        <div class="output-header">
+                            <span class="output-title">📤 运行结果</span>
+                            <button class="btn btn-sm btn-ghost" id="clearOutputBtn">清空</button>
+                        </div>
+                        <div class="output-body" id="outputBody">
+                            <div class="output-placeholder">点击"运行代码"按钮查看结果...</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 习题区域 -->
+                <div class="task-exercises" id="taskExercises">
+                    <h3 class="exercises-title">📝 课后习题</h3>
+                    <div class="exercises-list" id="exercisesList">
+                        <!-- 习题由JS动态生成 -->
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 辅助侧边栏（浮窗） -->
+    <aside class="helper-sidebar" id="helperSidebar">
+        <button class="helper-toggle" id="helperToggle">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+        </button>
+        <div class="helper-content">
+            <div class="helper-section">
+                <h4>📝 实时笔记</h4>
+                <textarea class="notes-input" id="lessonNotes" placeholder="记录本节笔记..."></textarea>
+            </div>
+            <div class="helper-section">
+                <h4>📊 电商指标</h4>
+                <div class="cheatsheet">
+                    <div class="cheatsheet-item">
+                        <span class="cheatsheet-label">GMV</span>
+                        <span class="cheatsheet-desc">商品交易总额</span>
+                    </div>
+                    <div class="cheatsheet-item">
+                        <span class="cheatsheet-label">客单价</span>
+                        <span class="cheatsheet-desc">平均每单金额</span>
+                    </div>
+                    <div class="cheatsheet-item">
+                        <span class="cheatsheet-label">转化率</span>
+                        <span class="cheatsheet-desc">下单用户/访客</span>
+                    </div>
+                </div>
+            </div>
+            <div class="helper-section">
+                <h4>🐼 Pandas代码</h4>
+                <div class="code-snippets">
+                    <button class="snippet-btn" data-code="import pandas as pd">
+                        <code>import pandas as pd</code>
+                    </button>
+                    <button class="snippet-btn" data-code="df.head()">
+                        <code>df.head()</code>
+                    </button>
+                    <button class="snippet-btn" data-code="df.info()">
+                        <code>df.info()</code>
+                    </button>
+                    <button class="snippet-btn" data-code="df.describe()">
+                        <code>df.describe()</code>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- 名词解释弹窗 -->
+    <div class="tooltip-popup" id="tooltipPopup">
+        <div class="tooltip-content" id="tooltipContent"></div>
+    </div>
+
+    <!-- 习题解答模态框 -->
+    <div class="modal" id="solutionModal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">解题思路与参考代码</h3>
+                <button class="modal-close" aria-label="关闭">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="solution-section">
+                    <h4>💡 解题思路</h4>
+                    <div class="solution-text" id="solutionText"></div>
+                </div>
+                <div class="solution-section">
+                    <h4>📋 参考代码</h4>
+                    <pre class="solution-code"><code id="solutionCode"></code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 卡顿提醒模态框 -->
+    <div class="modal" id="lagModal">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content modal-sm">
+            <div class="modal-header">
+                <h3 class="modal-title">⚠️ 运行提醒</h3>
+            </div>
+            <div class="modal-body">
+                <p>检测到代码运行时间较长，可能造成页面卡顿。</p>
+                <p class="text-muted">建议减少数据量或优化算法。</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="continueRunBtn">继续运行</button>
+                <button class="btn btn-secondary" id="cancelRunBtn">取消</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast容器 -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Scripts -->
+    <script src="scripts/utils.js"></script>
+    <script src="scripts/storage.js"></script>
+    <script src="scripts/pyodide-runner.js"></script>
+    <script src="scripts/editor.js"></script>
+    <script src="scripts/course-data.js"></script>
+    <script src="scripts/app.js"></script>
+</body>
+</html>
