@@ -39,11 +39,37 @@ npx serve .
 
 ### 部署到Cloudflare Pages
 
-1. Fork此仓库到你的GitHub
-2. 登录Cloudflare Pages
-3. 连接到你的GitHub仓库
-4. 设置构建命令为空（纯静态）
-5. 部署完成
+1. **推送代码到GitHub**
+   ```bash
+   # 在GitHub创建新仓库，然后
+   git remote add origin https://github.com/你的用户名/python-learning.git
+   git push -u origin master
+   ```
+
+2. **连接Cloudflare Pages**
+   - 登录 [Cloudflare Dashboard](https://dash.cloudflare.com/)
+   - 进入 Pages → Create a project
+   - 选择 Connect to Git
+   - 授权GitHub访问
+   - 选择刚才创建的仓库
+
+3. **配置部署**
+   - Project settings:
+     - **Project name**: `python-learning` (或其他名称)
+     - **Production branch**: `master`
+     - **Build command**: (留空)
+     - **Build output directory**: `/`
+
+4. **部署**
+   - 点击 Save and Deploy
+   - 等待构建完成
+   - 你的网站将托管在 `https://你的项目名.pages.dev`
+
+### 快速体验
+
+网站无需任何构建，直接打开 `index.html` 即可在本地运行。
+
+所有外部依赖（Pyodide、CodeMirror等）均通过CDN加载。
 
 ## 项目结构
 
