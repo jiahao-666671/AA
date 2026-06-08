@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>课程学习 - Python学习平台</title>
+  
+  <!-- 引入字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- 引入样式 -->
+  <link rel="stylesheet" href="css/main.css">
+  
+  <!-- 引入CodeMirror -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/monokai.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+</head>
+<body>
+  <!-- 头部导航 -->
+  <header class="header">
+    <div class="header-left">
+      <button class="sidebar-toggle" id="sidebar-toggle" title="切换侧边栏">
+        <span>☰</span>
+      </button>
+      <a href="index.html" class="header-logo">
+        <span>🐍</span>
+        <span>Python学习</span>
+      </a>
+      <nav class="header-nav">
+        <a href="index.html">首页</a>
+        <a href="course.html" class="active">课程</a>
+        <a href="quiz.html">题库</a>
+      </nav>
+    </div>
+    <div class="header-right">
+      <button class="theme-toggle" id="theme-toggle" title="切换主题">
+        <span id="theme-icon">🌙</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 整体布局容器 -->
+  <div class="app-container">
+    <!-- 左侧课程目录 -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <span class="sidebar-title">课程目录</span>
+      </div>
+      <nav class="course-list" id="course-sidebar">
+        <!-- 动态渲染 -->
+      </nav>
+      
+      <!-- 辅助侧边栏 -->
+      <div class="sidebar-section">
+        <div class="sidebar-section-header">
+          <span>📝 笔记</span>
+        </div>
+        <textarea id="global-notes" class="notes-textarea" placeholder="记录学习笔记..."></textarea>
+      </div>
+      
+      <div class="sidebar-section">
+        <div class="sidebar-section-header">
+          <span>📋 代码片段</span>
+        </div>
+        <div id="code-snippets" class="snippets-container">
+          <!-- 动态渲染 -->
+        </div>
+      </div>
+      
+      <div class="sidebar-section">
+        <div class="sidebar-section-header">
+          <span>📊 电商指标</span>
+        </div>
+        <div id="ecommerce-metrics" class="metrics-container">
+          <!-- 动态渲染 -->
+        </div>
+      </div>
+    </aside>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+      <div id="task-container">
+        <!-- 动态渲染任务内容 -->
+      </div>
+    </main>
+  </div>
+
+  <!-- 移动端底部操作栏 -->
+  <div class="mobile-actions">
+    <button class="mobile-action-btn primary" id="mobile-run">
+      <span>▶</span> 运行代码
+    </button>
+    <button class="mobile-action-btn secondary" id="mobile-editor">
+      <span>📝</span> 打开编辑器
+    </button>
+  </div>
+
+  <!-- 引入脚本 -->
+  <script src="js/storage.js"></script>
+  <script src="js/pyodide-runner.js"></script>
+  <script src="js/toast.js"></script>
+  <script src="js/editor-component.js"></script>
+  <script src="js/tooltip.js"></script>
+  <script src="data/courses.js"></script>
+  <script src="js/course.js"></script>
+  
+  <!-- 主题切换脚本 -->
+  <script>
+    function updateThemeIcon() {
+      const theme = StorageManager.getTheme();
+      const icon = document.getElementById('theme-icon');
+      if (icon) {
+        icon.textContent = theme === 'dark' ? '☀️' : '🌙';
+      }
+    }
+    
+    const observer = new MutationObserver(() => {
+      updateThemeIcon();
+    });
+    
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme']
+    });
+    
+    updateThemeIcon();
+  </script>
+
+  <style>
+    /* 课程页面特有样式 */
+    .sidebar-section {
+      padding: var(--space-md);
+      border-top: 1px solid var(--color-border);
+    }
+    
+    .sidebar-section-header {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-sm);
+    }
+    
+    .snippets-container {
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    
+    .metrics-container {
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    
+    .task-list {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .task-list-item {
+      margin-bottom: var(--space-sm);
+    }
+    
+    .task-list-item a {
+      display: flex;
+      align-items: center;
+      padding: var(--space-md);
+      background-color: var(--color-bg-secondary);
+      border-radius: var(--radius-md);
+      text-decoration: none;
+      color: var(--color-text);
+      transition: all var(--transition-fast);
+    }
+    
+    .task-list-item a:hover {
+      background-color: var(--color-primary);
+      color: var(--color-text-inverse);
+    }
+    
+    .task-list-item.completed a {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: var(--color-success);
+    }
+    
+    .task-list-item.completed a:hover {
+      background-color: var(--color-success);
+      color: white;
+    }
+    
+    .task-number {
+      width: 28px;
+      height: 28px;
+      background-color: var(--color-card);
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: var(--text-sm);
+      margin-right: var(--space-md);
+    }
+    
+    .task-title {
+      flex: 1;
+    }
+    
+    .task-check {
+      color: var(--color-success);
+      font-weight: 600;
+    }
+    
+    .quiz-number {
+      font-weight: 600;
+      margin-left: var(--space-sm);
+    }
+    
+    .quiz-status {
+      font-size: var(--text-sm);
+      padding: var(--space-xs) var(--space-sm);
+      border-radius: var(--radius-full);
+      background-color: var(--color-bg-secondary);
+      color: var(--color-text-muted);
+    }
+    
+    .quiz-status.answered {
+      background-color: rgba(59, 130, 246, 0.1);
+      color: var(--color-primary);
+    }
+    
+    .quiz-status.correct {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: var(--color-success);
+    }
+    
+    .quiz-status.incorrect {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: var(--color-error);
+    }
+    
+    .wrong-quiz-item {
+      padding: var(--space-md);
+      border-bottom: 1px solid var(--color-border);
+    }
+    
+    .wrong-quiz-item:last-child {
+      border-bottom: none;
+    }
+    
+    .wrong-quiz-question {
+      margin-bottom: var(--space-md);
+    }
+    
+    .wrong-quiz-options {
+      margin-bottom: var(--space-md);
+    }
+    
+    .wrong-quiz-explanation {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+    }
+    
+    .wrong-quiz-explanation details {
+      padding: var(--space-sm);
+      background-color: var(--color-bg-secondary);
+      border-radius: var(--radius-md);
+    }
+    
+    .wrong-quiz-explanation summary {
+      cursor: pointer;
+      font-weight: 500;
+    }
+    
+    .text-success { color: var(--color-success); }
+    .text-error { color: var(--color-error); }
+    .text-muted { color: var(--color-text-muted); }
+    .ml-md { margin-left: var(--space-md); }
+    
+    @media (max-width: 1024px) {
+      .sidebar {
+        z-index: 200;
+      }
+      
+      .app-container {
+        flex-direction: column;
+      }
+      
+      .main-content {
+        padding-bottom: 80px;
+      }
+    }
+  </style>
+</body>
+</html>

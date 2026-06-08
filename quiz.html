@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>题库 - Python学习平台</title>
+  
+  <!-- 引入字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- 引入样式 -->
+  <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+  <!-- 头部导航 -->
+  <header class="header">
+    <div class="header-left">
+      <button class="sidebar-toggle" id="sidebar-toggle" title="切换侧边栏">
+        <span>☰</span>
+      </button>
+      <a href="index.html" class="header-logo">
+        <span>🐍</span>
+        <span>Python学习</span>
+      </a>
+      <nav class="header-nav">
+        <a href="index.html">首页</a>
+        <a href="course.html">课程</a>
+        <a href="quiz.html" class="active">题库</a>
+      </nav>
+    </div>
+    <div class="header-right">
+      <button class="theme-toggle" id="theme-toggle" title="切换主题">
+        <span id="theme-icon">🌙</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- 整体布局容器 -->
+  <div class="app-container">
+    <!-- 左侧边栏 -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <span class="sidebar-title">题库</span>
+      </div>
+      
+      <!-- 模式切换 -->
+      <div id="mode-toggle" class="mode-toggle">
+        <!-- 动态渲染 -->
+      </div>
+      
+      <!-- 学习统计 -->
+      <div class="quiz-stats">
+        <div class="quiz-stat-item">
+          <span class="quiz-stat-label">总题目</span>
+          <span class="quiz-stat-value" id="total-quiz-count">-</span>
+        </div>
+        <div class="quiz-stat-item">
+          <span class="quiz-stat-label">已完成</span>
+          <span class="quiz-stat-value" id="completed-quiz-count">-</span>
+        </div>
+        <div class="quiz-stat-item">
+          <span class="quiz-stat-label">正确率</span>
+          <span class="quiz-stat-value" id="quiz-accuracy">-</span>
+        </div>
+      </div>
+      
+      <!-- 快速链接 -->
+      <div class="sidebar-links">
+        <a href="course.html" class="sidebar-link">
+          <span>📚</span> 去学习课程
+        </a>
+      </div>
+    </aside>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+      <div id="quiz-container">
+        <!-- 动态渲染题目 -->
+      </div>
+    </main>
+  </div>
+
+  <!-- 引入脚本 -->
+  <script src="js/storage.js"></script>
+  <script src="js/toast.js"></script>
+  <script src="data/courses.js"></script>
+  <script src="js/quiz.js"></script>
+  
+  <!-- 主题切换脚本 -->
+  <script>
+    function updateThemeIcon() {
+      const theme = StorageManager.getTheme();
+      const icon = document.getElementById('theme-icon');
+      if (icon) {
+        icon.textContent = theme === 'dark' ? '☀️' : '🌙';
+      }
+    }
+    
+    const observer = new MutationObserver(() => {
+      updateThemeIcon();
+    });
+    
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme']
+    });
+    
+    updateThemeIcon();
+    
+    // 更新统计数字
+    document.addEventListener('DOMContentLoaded', () => {
+      const stats = StorageManager.getStatistics();
+      const totalEl = document.getElementById('total-quiz-count');
+      const completedEl = document.getElementById('completed-quiz-count');
+      const accuracyEl = document.getElementById('quiz-accuracy');
+      
+      // 计算总题数
+      let totalQuizzes = 0;
+      COURSES.forEach(ch => {
+        if (ch.quizzes) totalQuizzes += ch.quizzes.length;
+      });
+      
+      if (totalEl) totalEl.textContent = totalQuizzes;
+      if (completedEl) completedEl.textContent = stats.completedQuizzes;
+      if (accuracyEl) accuracyEl.textContent = stats.averageScore + '%';
+    });
+  </script>
+
+  <style>
+    /* 题库页面特有样式 */
+    .mode-toggle {
+      display: flex;
+      gap: var(--space-sm);
+      padding: var(--space-md);
+      border-bottom: 1px solid var(--color-border);
+    }
+    
+    .mode-toggle .btn {
+      flex: 1;
+      text-align: center;
+    }
+    
+    .quiz-stats {
+      padding: var(--space-md);
+      border-bottom: 1px solid var(--color-border);
+    }
+    
+    .quiz-stat-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: var(--space-sm) 0;
+    }
+    
+    .quiz-stat-label {
+      color: var(--color-text-secondary);
+      font-size: var(--text-sm);
+    }
+    
+    .quiz-stat-value {
+      font-weight: 600;
+      color: var(--color-text);
+    }
+    
+    .sidebar-links {
+      padding: var(--space-md);
+    }
+    
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+      border-radius: var(--radius-md);
+      color: var(--color-text);
+      text-decoration: none;
+      transition: all var(--transition-fast);
+    }
+    
+    .sidebar-link:hover {
+      background-color: var(--color-bg-secondary);
+    }
+    
+    .quiz-card {
+      margin-bottom: var(--space-lg);
+    }
+    
+    .quiz-footer {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+    
+    .quiz-result {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+    }
+    
+    .quiz-explanation {
+      padding: var(--space-md);
+      background-color: var(--color-bg-secondary);
+      border-radius: var(--radius-md);
+    }
+    
+    .quiz-explanation h4 {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      margin-bottom: var(--space-sm);
+      color: var(--color-text);
+    }
+    
+    .quiz-explanation p {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      line-height: 1.6;
+    }
+    
+    .quiz-solution {
+      padding: var(--space-md);
+      background-color: var(--color-code-bg);
+      border-radius: var(--radius-md);
+    }
+    
+    .quiz-solution h4 {
+      font-size: var(--text-sm);
+      font-weight: 600;
+      margin-bottom: var(--space-sm);
+      color: var(--color-code-text);
+    }
+    
+    .quiz-solution pre {
+      margin: 0;
+      overflow-x: auto;
+    }
+    
+    .quiz-solution code {
+      font-family: var(--font-mono);
+      font-size: var(--text-sm);
+      color: var(--color-code-text);
+    }
+    
+    @media (max-width: 1024px) {
+      .sidebar {
+        display: none;
+      }
+    }
+  </style>
+</body>
+</html>

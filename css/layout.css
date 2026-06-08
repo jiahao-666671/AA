@@ -1,0 +1,362 @@
+/**
+ * 布局样式 - Layout Styles
+ * 三栏布局：左侧目录 + 中间内容 + 右侧编辑器
+ */
+
+/* 整体布局容器 */
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--color-bg);
+}
+
+/* 头部导航 */
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  background-color: var(--color-card);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-lg);
+  z-index: var(--z-dropdown);
+  box-shadow: var(--shadow-sm);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.header-logo {
+  font-size: var(--text-xl);
+  font-weight: 700;
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.header-nav {
+  display: flex;
+  gap: var(--space-xs);
+  margin-left: var(--space-xl);
+}
+
+.header-nav a {
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+}
+
+.header-nav a:hover {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text);
+}
+
+.header-nav a.active {
+  background-color: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+/* 主题切换按钮 */
+.theme-toggle {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  border: none;
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-fast);
+}
+
+.theme-toggle:hover {
+  background-color: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+/* 侧边栏 - 课程目录 */
+.sidebar {
+  position: fixed;
+  top: var(--header-height);
+  left: 0;
+  width: var(--sidebar-width);
+  height: calc(100vh - var(--header-height));
+  background-color: var(--color-card);
+  border-right: 1px solid var(--color-border);
+  overflow-y: auto;
+  transition: transform var(--transition-normal);
+  z-index: var(--z-dropdown);
+}
+
+.sidebar.collapsed {
+  transform: translateX(-100%);
+}
+
+.sidebar-header {
+  padding: var(--space-md);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sidebar-title {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.sidebar-toggle {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-toggle:hover {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text);
+}
+
+/* 课程目录列表 */
+.course-list {
+  padding: var(--space-sm);
+}
+
+.course-chapter {
+  margin-bottom: var(--space-sm);
+}
+
+.chapter-header {
+  display: flex;
+  align-items: center;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  color: var(--color-text);
+  font-weight: 500;
+}
+
+.chapter-header:hover {
+  background-color: var(--color-bg-secondary);
+}
+
+.chapter-icon {
+  margin-right: var(--space-sm);
+  transition: transform var(--transition-fast);
+}
+
+.chapter-header.expanded .chapter-icon {
+  transform: rotate(90deg);
+}
+
+.chapter-title {
+  flex: 1;
+  font-size: var(--text-sm);
+}
+
+.chapter-progress {
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.chapter-lessons {
+  display: none;
+  padding-left: var(--space-lg);
+  margin-top: var(--space-xs);
+}
+
+.chapter-lessons.expanded {
+  display: block;
+}
+
+.lesson-item {
+  display: flex;
+  align-items: center;
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+  transition: all var(--transition-fast);
+  text-decoration: none;
+}
+
+.lesson-item:hover {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text);
+}
+
+.lesson-item.active {
+  background-color: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.lesson-item.completed::before {
+  content: '✓';
+  margin-right: var(--space-sm);
+  color: var(--color-success);
+}
+
+/* 主内容区 */
+.main-content {
+  flex: 1;
+  margin-left: var(--sidebar-width);
+  margin-top: var(--header-height);
+  padding: var(--space-xl);
+  min-height: calc(100vh - var(--header-height));
+}
+
+/* 编辑器面板 */
+.editor-panel {
+  position: fixed;
+  top: var(--header-height);
+  right: 0;
+  width: var(--editor-width);
+  height: calc(100vh - var(--header-height));
+  background-color: var(--color-card);
+  border-left: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--transition-normal);
+  z-index: var(--z-dropdown);
+}
+
+.editor-panel.collapsed {
+  transform: translateX(100%);
+}
+
+.editor-panel-header {
+  padding: var(--space-md);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.editor-panel-title {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.editor-panel-actions {
+  display: flex;
+  gap: var(--space-sm);
+}
+
+/* 移动端响应式 */
+@media (max-width: 1024px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+  
+  .sidebar.open {
+    transform: translateX(0);
+  }
+  
+  .main-content {
+    margin-left: 0;
+  }
+  
+  .editor-panel {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 50vh;
+    border-left: none;
+    border-top: 1px solid var(--color-border);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    transform: translateY(100%);
+  }
+  
+  .editor-panel.open {
+    transform: translateY(0);
+  }
+  
+  .header-nav {
+    display: none;
+  }
+}
+
+/* 移动端底部操作栏 */
+.mobile-actions {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  background-color: var(--color-card);
+  border-top: 1px solid var(--color-border);
+  padding: 0 var(--space-md);
+  align-items: center;
+  justify-content: space-around;
+  z-index: var(--z-dropdown);
+}
+
+@media (max-width: 1024px) {
+  .mobile-actions {
+    display: flex;
+  }
+  
+  .main-content {
+    padding-bottom: 80px;
+  }
+}
+
+.mobile-action-btn {
+  flex: 1;
+  height: 44px;
+  border: none;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-sm);
+  transition: all var(--transition-fast);
+}
+
+.mobile-action-btn.primary {
+  background-color: var(--color-primary);
+  color: var(--color-text-inverse);
+}
+
+.mobile-action-btn.secondary {
+  background-color: var(--color-bg-secondary);
+  color: var(--color-text);
+  margin-left: var(--space-sm);
+}

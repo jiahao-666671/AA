@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Python学习平台 - 浏览器中的Python学习环境</title>
+  <meta name="description" content="基于Pyodide的交互式Python学习平台，无需安装任何软件，即可在浏览器中学习、编写和运行Python代码。">
+  
+  <!-- 引入字体 -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- 引入样式 -->
+  <link rel="stylesheet" href="css/main.css">
+  
+  <!-- 引入Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+</head>
+<body>
+  <!-- 头部导航 -->
+  <header class="header">
+    <div class="header-left">
+      <a href="index.html" class="header-logo">
+        <span>🐍</span>
+        <span>Python学习平台</span>
+      </a>
+      <nav class="header-nav">
+        <a href="index.html" class="active">首页</a>
+        <a href="course.html">课程</a>
+        <a href="quiz.html">题库</a>
+      </nav>
+    </div>
+    <div class="header-right">
+      <button class="theme-toggle" id="theme-toggle" title="切换主题">
+        <span id="theme-icon">🌙</span>
+      </button>
+      <button class="btn btn-secondary btn-sm" id="export-btn">
+        📤 导出进度
+      </button>
+      <button class="btn btn-secondary btn-sm" id="import-btn">
+        📥 导入进度
+      </button>
+      <input type="file" id="import-input" accept=".json" style="display: none;">
+    </div>
+  </header>
+
+  <!-- 主内容区 -->
+  <main class="main-content">
+    <!-- 欢迎横幅 -->
+    <section class="hero-section">
+      <h1>欢迎来到Python学习平台</h1>
+      <p>在浏览器中学习Python，无需安装任何软件</p>
+    </section>
+
+    <!-- 学习统计 -->
+    <section class="stats-section">
+      <h2 class="section-title">学习进度</h2>
+      <div id="stats-grid" class="stats-grid">
+        <!-- 动态渲染 -->
+      </div>
+      
+      <!-- 可视化图表 -->
+      <div class="charts-row">
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">任务完成进度</h3>
+          </div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas id="progress-chart"></canvas>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">平均得分</h3>
+          </div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas id="score-chart"></canvas>
+            </div>
+          </div>
+        </div>
+        
+        <div class="card">
+          <div class="card-header">
+            <h3 class="card-title">正确率</h3>
+          </div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas id="wrong-chart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 快捷入口 -->
+    <section class="quick-section">
+      <h2 class="section-title">开始学习</h2>
+      <div id="quick-links" class="quick-links-grid">
+        <!-- 动态渲染 -->
+      </div>
+    </section>
+
+    <!-- 特性介绍 -->
+    <section class="features-section">
+      <h2 class="section-title">平台特性</h2>
+      <div class="features-grid">
+        <div class="card feature-card">
+          <div class="feature-icon">⚡</div>
+          <h3>即时运行</h3>
+          <p>基于Pyodide技术，无需等待，直接在浏览器中运行Python代码</p>
+        </div>
+        <div class="card feature-card">
+          <div class="feature-icon">📊</div>
+          <h3>真实数据集</h3>
+          <p>内置电商数据集，一键导入，贴近真实业务场景</p>
+        </div>
+        <div class="card feature-card">
+          <div class="feature-icon">💾</div>
+          <h3>进度保存</h3>
+          <p>代码、笔记、学习进度自动保存到本地</p>
+        </div>
+        <div class="card feature-card">
+          <div class="feature-icon">🎯</div>
+          <h3>针对性练习</h3>
+          <p>配套习题与错题本，针对性巩固所学知识</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+      <p>Python学习平台 - 基于 Pyodide 构建 | 数据存储在本地浏览器</p>
+    </footer>
+  </main>
+
+  <!-- 引入脚本 -->
+  <script src="js/storage.js"></script>
+  <script src="js/pyodide-runner.js"></script>
+  <script src="js/toast.js"></script>
+  <script src="js/chart-manager.js"></script>
+  <script src="js/main.js"></script>
+  
+  <!-- 主题切换脚本 -->
+  <script>
+    // 更新主题图标
+    function updateThemeIcon() {
+      const theme = StorageManager.getTheme();
+      const icon = document.getElementById('theme-icon');
+      if (icon) {
+        icon.textContent = theme === 'dark' ? '☀️' : '🌙';
+      }
+    }
+    
+    // 监听主题变化
+    const observer = new MutationObserver(() => {
+      updateThemeIcon();
+    });
+    
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['data-theme']
+    });
+    
+    updateThemeIcon();
+  </script>
+
+  <style>
+    /* 首页特有样式 */
+    .hero-section {
+      text-align: center;
+      padding: var(--space-2xl) 0;
+      background: linear-gradient(135deg, var(--color-primary) 0%, #8B5CF6 100%);
+      color: white;
+      border-radius: var(--radius-xl);
+      margin-bottom: var(--space-xl);
+    }
+    
+    .hero-section h1 {
+      font-size: var(--text-3xl);
+      font-weight: 700;
+      margin-bottom: var(--space-md);
+    }
+    
+    .hero-section p {
+      font-size: var(--text-lg);
+      opacity: 0.9;
+    }
+    
+    .section-title {
+      font-size: var(--text-xl);
+      font-weight: 600;
+      margin-bottom: var(--space-lg);
+      color: var(--color-text);
+    }
+    
+    .charts-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: var(--space-lg);
+      margin-bottom: var(--space-xl);
+    }
+    
+    .quick-links-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: var(--space-lg);
+      margin-bottom: var(--space-xl);
+    }
+    
+    .quick-link {
+      display: block;
+      padding: var(--space-lg);
+      text-align: center;
+      text-decoration: none;
+      transition: all var(--transition-fast);
+    }
+    
+    .quick-link:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+    }
+    
+    .quick-link-icon {
+      font-size: 48px;
+      margin-bottom: var(--space-md);
+    }
+    
+    .quick-link-title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      color: var(--color-text);
+      margin-bottom: var(--space-xs);
+    }
+    
+    .quick-link-desc {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--space-lg);
+      margin-bottom: var(--space-xl);
+    }
+    
+    .feature-card {
+      text-align: center;
+      padding: var(--space-xl);
+    }
+    
+    .feature-icon {
+      font-size: 48px;
+      margin-bottom: var(--space-md);
+    }
+    
+    .feature-card h3 {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      margin-bottom: var(--space-sm);
+      color: var(--color-text);
+    }
+    
+    .feature-card p {
+      font-size: var(--text-sm);
+      color: var(--color-text-secondary);
+      line-height: 1.6;
+    }
+    
+    .footer {
+      text-align: center;
+      padding: var(--space-xl) 0;
+      color: var(--color-text-muted);
+      font-size: var(--text-sm);
+      border-top: 1px solid var(--color-border);
+      margin-top: var(--space-2xl);
+    }
+    
+    .text-success { color: var(--color-success); }
+    .text-error { color: var(--color-error); }
+    .text-muted { color: var(--color-text-muted); }
+    .ml-md { margin-left: var(--space-md); }
+    .mt-md { margin-top: var(--space-md); }
+  </style>
+</body>
+</html>
