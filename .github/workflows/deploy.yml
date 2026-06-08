@@ -12,11 +12,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: List files
+        run: ls -la
+
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1
+        id: deployment
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: python-learning
           directory: .
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Show deployment URL
+        run: echo "部署成功! 访问: ${{ steps.deployment.outputs.url }}"
